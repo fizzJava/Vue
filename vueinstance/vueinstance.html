@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue实例</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+</head>
+<body>
+    <div id="app">
+        <p>{{ foo }}</p>
+<!--        这里的foo不会更新-->
+        <button v-on:click="foo='baz'">Change it</button>
+    </div>
+
+    <div id="example"></div>
+    <script>
+        var data = {a:1};
+        var vm = new Vue({
+            data:data
+        });
+        console.log(data.a = vm.a);
+        vm.a = 2;
+        console.log(data.a);
+        data.a = 3;
+        console.log(vm.a);
+// 这样foo就不能更新了。
+        var obj = {
+            foo:'bar'
+        };
+        Object.freeze(obj);
+        var app = new Vue({
+            el:"#app",
+            data:obj
+        })
+       //除了数据属性，还有一些实例属性和方法，更多了解要查看Vue官方API
+       var dataObj = {a:1};
+       var vm2 = new Vue({
+           el:"#example",
+           data:dataObj
+       })
+        console.log(vm2.$data === dataObj);
+        console.log(vm2.$el === document.getElementById('example'));
+        vm2.$watch('a',function (newValue,oldValue) {
+            //这个回调，会在vm.a改变后调用
+            console.log('vm.a的值已经改变')
+        })
+
+    </script>
+</body>
+</html>
