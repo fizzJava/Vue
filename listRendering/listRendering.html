@@ -34,6 +34,47 @@
 <!--1.vm.items[indexOfItem] = newValue-->
 <!--2.vm.items.length = newLength-->
 
+<!--显示过滤/排序后的结果 1.使用计算属性 2.使用方法-->
+<ul id="app-4">
+    <li v-for=" n in evenNumbers">
+        {{ n }}
+    </li>
+</ul>
+
+<ul id="app-5">
+    <li v-for="n in even(numbers)">
+        {{ n }}
+    </li>
+</ul>
+
+<!-- 在 v-for里使用值范围 不要忘记实例化-->
+<div id="app-6">
+    <span v-for="n in 10"> {{ n }}</span>
+</div>
+
+<!-- 在template上使用v-for -->
+<ul id="app-7">
+    <template v-for="item in items">
+        <li>{{ item.msg }}</li>
+        <li class="divider" role="presentation"></li>
+    </template>
+</ul>
+
+<!-- v-for 和 v-if 一起使用-->
+<ul id="app-8">
+    <li v-for="todo in todos" v-if="!todo.isComplete">
+        {{ todo.msg }}
+    </li>
+</ul>
+
+<div id="app-9">
+    <ul v-if="todos.length">
+        <li v-for="todo in todos">
+            {{ todo }}
+        </li>
+    </ul>
+    <p v-else>No todos left</p>
+</div>
 
 <script>
     var app = new Vue({
@@ -67,8 +108,73 @@
                 publishedAt:"2019.07.29"
             }
         }
-    })
+    });
 
+    var app4 = new Vue({
+        el:"#app-4",
+        data:{
+            numbers:[1,2,3,4,5]
+        },
+        computed:{
+            evenNumbers:function () {
+                return this.numbers.filter(function (number) {
+                    return number % 2 === 0
+                })
+            }
+        }
+    });
+    
+    var app5 = new Vue({
+        el:'#app-5',
+        data:{
+            numbers:[6,7,8,9,10]
+        },
+        methods:{
+            even:function (numbers) {
+                return numbers.filter(function (number) {
+                    return number % 2 === 0
+                })
+            }
+        }
+    });
+
+    var app6 = new Vue({
+        el:'#app-6'
+    });
+
+    var app7 = new Vue({
+        el:'#app-7',
+        data:{
+            items:[
+                {msg:"apple"},
+                {msg:'cuke'},
+                {msg:'tomato'}
+            ]
+        }
+    });
+
+    var app8 = new Vue({
+        el:"#app-8",
+        data:{
+            todos:[
+                {isComplete:false,msg:'learn'},
+                {isComplete:false,msg:'cook'},
+                {isComplete:true,msg:'buy'},
+            ]
+        }
+    });
+
+    var app9 = new Vue({
+        el:'#app-9',
+        data:{
+            // todos:[
+            //     'buy vegetables',
+            //     'cook dinner',
+            //     'play game'
+            // ]
+            todos:[]
+        }
+    })
 
 </script>
 </body>
