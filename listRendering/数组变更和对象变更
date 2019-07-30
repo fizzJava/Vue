@@ -1,0 +1,15 @@
+1.数组变更自动更新视图的方法
+    push()
+    pop()
+    shift()
+    unshift()
+    splice()
+    sort()
+    reverse()
+2.数组本身不会变化，需要赋值给新数组
+    filter()
+    concat()
+    slice()
+3.由于Javascript限制，？？？？Vue不能检测对象属性的添加和删除
+    对于已经创建的实例，Vue不允许添加根级别的响应属性 vm.b = "newPropertyValue" // not allowed
+    但是可以使用Vue.set(object,propertyName,value)方法向嵌套对象添加响应属性

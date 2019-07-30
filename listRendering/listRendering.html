@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>列表渲染</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+
+</head>
+<body>
+<!-- v-for 的使用:把一个数组对应于一组元素-->
+    <ul id="app">
+        <li v-for="item in items">
+            {{ item.message }}
+        </li>
+    </ul>
+
+<!--v-for index v-for块中可以访问所有父作用域的属性-->
+<ul id="app-2">
+    <li v-for="(item,index) in items">
+        {{parentMessage}} - {{ index }} -{{ item.message }}
+    </li>
+</ul>
+
+
+<!--在v-for里使用对象 value 可以提供键名(value,name) 当然也可以提供索引 (value,name,index)-->
+<!-- 维护状态，加个key v-bind:key=""  -->
+<ul id="app-3">
+    <li v-for="(value,name,index) in object" v-bind:key="value.id">
+        {{ index }} - {{ name }} - {{ value }}
+    </li>
+</ul>
+
+<!-- warning: Vue不能检测以下数组的变动 解决方法-->
+<!--1.vm.items[indexOfItem] = newValue-->
+<!--2.vm.items.length = newLength-->
+
+
+<script>
+    var app = new Vue({
+        el:"#app",
+        data:{
+            items:[
+                {message:"hello"},
+                {message:"vue"}
+            ]
+
+        }
+    });
+
+    var app2 = new Vue({
+        el:"#app-2",
+        data:{
+            parentMessage:'Parent',
+            items:[
+                {message:'Foo'},
+                {message:'Bar'}
+            ]
+        }
+    });
+
+    var app3 = new Vue({
+        el:'#app-3',
+        data:{
+            object:{
+                title:'how to do lists in Vue',
+                author:'Wang Guigang',
+                publishedAt:"2019.07.29"
+            }
+        }
+    })
+
+
+</script>
+</body>
+</html>
