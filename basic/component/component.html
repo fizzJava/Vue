@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>组件基础</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+
+</head>
+<body>
+<!--基本示例-->
+    <div id="components-demo">
+        <button-counter></button-counter>
+    </div>
+
+
+<!--    组件的复用 每个都是单独的实例，所以count也是单独的-->
+    <div id="components-reused">
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+    </div>
+<script>
+
+    //全局注册
+    Vue.component('my-component-name',{
+        //...options...
+    });
+
+
+
+    Vue.component('button-counter',{
+        data:function () {
+            return {
+                count:0
+            }
+        },
+        template:'<button v-on:click="count++">You clicked me {{ count }} times!</button>'
+
+    });
+    //因为组件实际上是可复用的Vue实例，所以他们与new Vue接收相同的选项，例如data，computed,watch,methods,
+    //以及生命周期钩子等，仅有的例外像el这样根实例特有的选项
+    var componentsDemo = new Vue({
+        el:"#components-demo"
+    });
+
+    var componentsReused = new Vue({
+        el:"#components-reused"
+    })
+</script>
+</body>
+</html>
