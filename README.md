@@ -1,2 +1,2 @@
 # Vue
-learn vue 
+孤独患者学习着Vue,玩着呢。
