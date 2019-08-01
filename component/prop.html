@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>prop</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+
+</head>
+
+<body>
+    <div id="prop-basic">
+        <blog-post v-bind:title="风起时">
+        </blog-post>
+    </div>
+
+
+    <script>
+        Vue.component('blog-post',{
+            props:{
+                title:String
+            },
+            template:`<h3> {{ title }}</h3>`
+        });
+
+        new Vue({
+            el:"#prop-basic",
+        })
+
+    </script>
+</body>
+</html>

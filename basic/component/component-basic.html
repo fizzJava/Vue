@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>再探组件基础</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+
+</head>
+
+<body>
+<!-- 组件是「可复用」的vue实例，并且带有一个名字，可以通过new Vue创建的Vue根实例中，把这个组件作为自定义元素来使用-->
+    <div id="app">
+        <button-counter></button-counter>
+    </div>
+<!-- 组件的复用-->
+    <div id="app-2">
+        <button-counter></button-counter>
+    </div>
+<!-- 通过prop向子组件传递数据 -->
+<!-- prop可以在组件上注册一些自定义特性，当一个值传递给prop特性的时候，它就变成了那个组件实例的一个属性-->
+    <div id="app-3">
+        <blog-post title="good morning"></blog-post>
+    </div>
+
+<!-- prop的动态绑定-->
+    <div id="app-4">
+        <blog-post v-for="p in posts" v-bind:post="p" v-bind:key="p.id"></blog-post>
+    </div>
+<!--监听子组件性质 父组件监听自定义事件-->
+    <div id="app-5" v-bind:style="{fontSize:fontSize + 'em'}">
+        <blog-post v-for="post in posts" v-bind:key="post.id"
+                   v-bind:post="post" v-on:enlarge-text="onEnlargeText"></blog-post>
+    </div>
+
+<!-- 在组件上使用v-model  下面两张形式是等价的 -->
+    <div id="app-6">
+<!--        <base-input v-model="searchText"></base-input>-->
+        <base-input v-bind:value="searchText" v-on:input="searchText=$event"></base-input>
+    </div>
+
+<!-- 通过插槽分发内容 -->
+    <div id="app-7">
+        <alert-box>
+            something had happened
+        </alert-box>
+    </div>
+
+<!-- 动态组件，不同组件之间的动态切换是非常有用的 TODO-->
+
+<!-- 解析DOM模板时的注意事项-->
+
+
+
+
+<script>
+//通过插槽分发内容
+    new Vue({
+        el:'#app-7',
+        data:{
+
+        },
+        components:{
+            'alert-box':{
+                props:[],
+                template:`
+    <div class="demo-alert-box">
+        <strong>
+            Error!
+        </strong>
+        <slot></slot>
+    </div>
+`
+            }
+        }
+    });
+
+
+    new Vue({
+        el:'#app-6',
+        data:{
+            searchText:''
+        },
+        components:{
+            'base-input':{
+                props:['value'],
+                'template': `<input v-bind:value="value" v-on:input="$emit('input',$event.target.value)">`
+
+            }
+        }
+    });
+
+    //全局注册的组件
+    // Vue.component('button-counter',{
+    //    data:function () {
+    //        return {
+    //            count:0
+    //        }
+    //    },
+    //     template:`<button v-on:click="count++"> You clicked me {{ count }} times.</button>`
+    // });
+
+
+    //局部注册的组件
+    new Vue({
+        el:"#app",
+        components:{
+            'button-counter':{
+                data:function () {
+                    return {
+                        count:0
+                    }
+                },
+                template:`<button v-on:click="count++"> You clicked me {{ count }} times.</button>`
+            }
+        }
+    });
+
+    new Vue({
+        el:"#app-2",
+
+        components:{
+
+            'button-counter':{
+                data:function () {
+                    return {
+                        count:0
+                    }
+                },//有个疑问，data对象
+
+                template:`<button v-on:click="count++"> You clicked me {{ count }} times.</button>`
+            }
+        }
+    });
+
+    //通过prop向子组件传递数据
+     new Vue({
+         el:'#app-3',
+         components:{
+             blogPost:{
+                 props:{
+                     title:String
+                 },
+                 template:`<h3>{{ title }}</h3>`
+             }
+         }
+     });
+
+    //通过prop动态绑定数据
+    new Vue({
+        el:'#app-4',
+        data:{
+           posts:[
+               {id:1,title:'My journey with Vue'},
+               {id:2,title:'Blogging with Vue'},
+               {id:3,title:'Why Vue is so fun'}
+           ]
+        },
+        components:{
+            'blog-post':{
+                props:{
+                    post:Object,
+                },
+                template:`<h3>{{ post.id }} --- {{ post.title }}</h3>`
+            }
+        }
+    });
+
+    //监听子组件性质，1.父组件决定文本放大多少
+    // 2.子组件决定文本放大多少,父组件监听这个事件的时候，可以通过$event捕获到这个值
+    new Vue({
+        el:'#app-5',
+        data:{
+          posts:[
+              {id:1,title:'My journey with Vue',content:'...content...'},
+              {id:2,title:'Blogging with Vue',content:'...content...'},
+              {id:3,title:'Why Vue is so fun',content:'...content...'}
+          ],
+          fontSize:1,
+        },
+        methods:{
+          onEnlargeText:function (amount) {
+              this.fontSize += amount;
+          }
+        },
+        components:{
+           'blog-post':{
+               props:{
+                   post:Object
+               },
+               template:`<div>
+                            <h3>{{ post.title }}</h3>
+                            <button v-on:click="$emit('enlarge-text',0.1)">Enlarge text</button>
+                            <p v-html="post.content"></p>
+                          </div>`
+
+            }
+           }
+
+    });
+
+
+</script>
+</body>
+</html>

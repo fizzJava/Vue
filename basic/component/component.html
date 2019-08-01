@@ -19,14 +19,60 @@
         <button-counter></button-counter>
         <button-counter></button-counter>
     </div>
+
+
+<!-- 通过prop向子组件传递数据-->
+    <div id="prop">
+        <blog-post title="My journey with Vue"></blog-post>
+        <blog-post title="Blogging with Vue"></blog-post>
+        <blog-post title="Why Vue is so fun"></blog-post>
+    </div>
+
+
+<!--模拟从api中获取数据，动态的渲染组件-->
+    <div id="dynamic-render-component">
+        <blog-post-dynamic
+            v-for="post in posts"
+            v-bind:key="post.id"
+            v-bind:title="post.title">
+
+        </blog-post-dynamic>
+    </div>
+
+<!-- 单个根元素 将模板的内容放在一个父元素内-->
+    <div id="app-2">
+        <blog
+                v-for="post in posts"
+                v-bind:key="post.id"
+                v-bind:post="post">
+
+        </blog>
+    </div>
+
+<!-- 监听子组件事件 使用事件抛出一个值-->
+    <div id="sub-component-event">
+        <div v-bind:style="{fontSize: postFontSize + 'em'}">
+            <blog-post-event
+                    v-for="post in posts"
+                    v-bind:key="post.id"
+                    v-bind:post="post"
+                    v-on:enlarge-text="onEnlargeText"
+            >
+            </blog-post-event>
+        </div>
+    </div>
+
+<!--在组件上使用v-model，自定义组件 e.g. input-->
+    <div id="custom-input-a">
+        <custom-input v-model="searchText"></custom-input>
+    </div>
+
 <script>
 
     //全局注册
     Vue.component('my-component-name',{
         //...options...
     });
-
-
 
     Vue.component('button-counter',{
         data:function () {
@@ -45,7 +91,97 @@
 
     var componentsReused = new Vue({
         el:"#components-reused"
+    });
+
+    //通过prop向子组件传递数据
+    Vue.component('blog-post',{
+        props:['title'],
+        template:'<h3> {{ title }}</h3>'
+    });
+    new Vue({
+        el:"#prop"
+    });
+
+    //从api中获取数据，动态渲染一个组件
+    Vue.component('blog-post-dynamic',{
+        props:['id','title'],
+        template:'<div><span>{{id}} - {{title}}</span></div>'
+    });
+    var blogPostDynamic = new Vue({
+        el:"#dynamic-render-component",
+        data:{
+            posts:[
+                {id:1,title:"My journey with Vue"},
+                {id:2,title:"Blogging with Vue"},
+                {id:3,title:"Why Vue is so fun"},
+            ]
+        }
+    });
+
+
+    //单个根元素报错
+    Vue.component('blog',{
+        props:['post'],
+        template:`<div class="blog">
+                <h3>{{ post.title }}</h3>
+                <div v-html="post.content"></div>
+            </div>`
+    });
+    new Vue({
+        el:"#app-2",
+        data:{
+            posts:[
+                {id:1,title:'My journey with Vue',content:'I lonely start to learn Vue....'}
+            ]
+        }
+    });
+
+    //监听子组件事件
+    Vue.component('blog-post-event',{
+        props:['post'],
+        template:`<div class="blog-post">
+                    <h3> {{ post.title }}</h3>
+                    <button v-on:click="$emit('enlarge-text',0.1)">Enlarge text</button>
+                    <div v-html="post.content"></div>
+                  </div>`,
+
+    });
+
+    new Vue({
+        el:"#sub-component-event",
+        data:{
+            posts:[
+                {id:1,title:'My journey with Vue',content:'I lonely start to learn Vue....'},
+                {id:2,title:'Blogging with Vue',  content:'I lonely start to learn Vue....'},
+                {id:3,title:'Why Vue is so fun',  content:'I lonely start to learn Vue....'}
+            ],
+            postFontSize:1
+        },
+        methods:{
+            onEnlargeText:function (enlargeAmount) {
+                this.postFontSize += enlargeAmount
+            }
+        }
+    });
+
+    //v-model放在自定义组件上
+    Vue.component('custom-input',{
+        props:{
+            value:String
+        },
+        template:`<input
+                     v-bind:value="value"
+                     v-on:input="$emit('input',$event.target.value)"
+                  >`
+    });
+    new Vue({
+        el:"#custom-input-a",
+        data:{
+            searchText:''
+        }
     })
+
+
 </script>
 </body>
 </html>
